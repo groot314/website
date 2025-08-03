@@ -4,28 +4,28 @@ on:
   push:
     branches: ["main"]
     paths:
-    - '**'
+      - '**'
 
 env:
-  REPO: website/
+  IMAGE_NAME: website/site
   KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
 jobs:
   build-push-artifact:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: .
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Build image
-        run: docker build . --tag ${{ env.REPO }}site:latest
+        run: docker build -t ${{ env.IMAGE_NAME }}:latest website/
 
       - name: Push image
-        run: docker push ${{ env.REPO }}site:latest
+        run: docker push ${{ env.IMAGE_NAME }}:latest
 
   deploy-kubectl:
     needs: build-push-artifact
-    runs-on: "self-hosted" 
+    runs-on: "self-hosted"
     steps:
       - name: Rollout restart
         uses: actions-hub/kubectl@master
