@@ -1,0 +1,31 @@
+name: Build and Push to Artifact Registry
+
+on:
+  push:
+    branches: ["main"]
+
+env:
+  REPO: website/
+  KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+
+jobs:
+  build-push-artifact:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Build image
+        run: docker build . --tag ${{ env.REPO }}site:latest
+
+      - name: Push image
+        run: docker push ${{ env.REPO }}site:latest
+
+  deploy-kubectl:
+    needs: build-push-artifact
+    runs-on: "self-hosted" 
+    steps:
+      - name: Rollout restart
+        uses: actions-hub/kubectl@master
+        with:
+          args: rollout restart deployment webpage -n website
