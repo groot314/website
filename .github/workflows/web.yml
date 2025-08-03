@@ -20,10 +20,10 @@ jobs:
 
       - name: Tag and build Docker image
         run: |
-          docker build -t $REGISTRY/$IMAGE_NAME:latest
+          docker build -t ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
 
       - name: Push to self-hosted Docker registry
-        run: docker push $REGISTRY/$IMAGE_NAME:latest
+        run: docker push ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
 
   deploy-kubectl:
     needs: build-push-artifact
