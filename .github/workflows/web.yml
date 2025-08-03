@@ -1,4 +1,4 @@
-name: Build and Push to Artifact Registry
+name: Build and Push to Self-Hosted Docker Registry
 
 on:
   push:
@@ -7,25 +7,27 @@ on:
       - '**'
 
 env:
+  REGISTRY: docker-registry.local.root-g.com
   IMAGE_NAME: website/site
   KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
 jobs:
   build-push-artifact:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build image
-        run: docker build -t ${{ env.IMAGE_NAME }}:latest website/
+      - name: Tag and build Docker image
+        run: |
+          docker build -t $REGISTRY/$IMAGE_NAME:latest website/
 
-      - name: Push image
-        run: docker push ${{ env.IMAGE_NAME }}:latest
+      - name: Push to self-hosted Docker registry
+        run: docker push $REGISTRY/$IMAGE_NAME:latest
 
   deploy-kubectl:
     needs: build-push-artifact
-    runs-on: "self-hosted"
+    runs-on: self-hosted
     steps:
       - name: Rollout restart
         uses: actions-hub/kubectl@master
