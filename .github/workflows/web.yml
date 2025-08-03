@@ -20,7 +20,7 @@ jobs:
 
       - name: Tag and build Docker image
         run: |
-          docker build -t ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
+          docker build -t ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest .
 
       - name: Push to self-hosted Docker registry
         run: docker push ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
