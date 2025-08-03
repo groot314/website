@@ -20,7 +20,7 @@ jobs:
 
       - name: Tag and build Docker image
         run: |
-          docker build -t $REGISTRY/$IMAGE_NAME:latest website/
+          docker build -t $REGISTRY/$IMAGE_NAME:latest
 
       - name: Push to self-hosted Docker registry
         run: docker push $REGISTRY/$IMAGE_NAME:latest
