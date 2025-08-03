@@ -3,6 +3,8 @@ name: Build and Push to Artifact Registry
 on:
   push:
     branches: ["main"]
+    paths:
+    - '**'
 
 env:
   REPO: website/
