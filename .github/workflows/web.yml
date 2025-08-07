@@ -9,7 +9,6 @@ on:
 env:
   REGISTRY: docker-registry.local.root-g.com
   IMAGE_NAME: website/site
-  KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
 jobs:
   build-push-artifact:
@@ -25,11 +24,17 @@ jobs:
       - name: Push to self-hosted Docker registry
         run: docker push ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
 
-  deploy-kubectl:
-    needs: build-push-artifact
+jobs:
+  deploy:
+    name: Deploy
     runs-on: "self-hosted" 
+
     steps:
-      - name: Rollout restart
-        uses: actions-hub/kubectl@master
+      - uses: actions/checkout@v4
+      - uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+
+      - uses: actions-hub/kubectl@master
         with:
-          args: rollout restart deployment website -n website
+          args: get pods
