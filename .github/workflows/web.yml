@@ -9,7 +9,6 @@ on:
 env:
   REGISTRY: docker-registry.local.root-g.com
   IMAGE_NAME: website/site
-  KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
 jobs:
   build-push-artifact:
@@ -31,6 +30,7 @@ jobs:
     steps:
       - name: Rollout restart
         uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
         with:
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
           args: rollout restart deployment webpage -n website
