@@ -31,6 +31,6 @@ jobs:
       - name: Rollout restart
         uses: actions-hub/kubectl@master
         env:
-          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+          KUBE_CONTEXT: ${{ secrets.KUBE_CONTEXT }}
         with:
           args: rollout restart deployment webpage -n website
