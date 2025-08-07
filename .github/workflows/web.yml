@@ -7,8 +7,9 @@ on:
       - '**'
 
 env:
-  REGISTRY: docker-registry.local.root-g.com
+  DOCKER_REGISTRY: docker-registry.local.root-g.com
   IMAGE_NAME: website/site
+  KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
 jobs:
   build-push-artifact:
@@ -19,21 +20,16 @@ jobs:
 
       - name: Tag and build Docker image
         run: |
-          docker build -t ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest .
+          docker build -t ${{env.DOCKER_REGISTRY}}/${{env.IMAGE_NAME}}:latest .
 
       - name: Push to self-hosted Docker registry
-        run: docker push ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
+        run: docker push ${{env.DOCKER_REGISTRY}}/${{env.IMAGE_NAME}}:latest
 
-  deploy:
-    name: Deploy
+  deploy-kubectl:
+    needs: build-push-artifact
     runs-on: "self-hosted" 
-
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
-
-      - uses: actions-hub/kubectl@master
+      - name: Rollout restart
+        uses: actions-hub/kubectl@master
         with:
-          args: get pods
+          args: rollout restart deployment website -n website
