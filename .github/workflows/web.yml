@@ -7,24 +7,9 @@ on:
       - '**'
 
 env:
-  DOCKER_REGISTRY: docker-registry.local.root-g.com
-  IMAGE_NAME: website/site
   KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
 jobs:
-  build-push-artifact:
-    runs-on: self-hosted
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Tag and build Docker image
-        run: |
-          docker build -t ${{env.DOCKER_REGISTRY}}/${{env.IMAGE_NAME}}:latest .
-
-      - name: Push to self-hosted Docker registry
-        run: docker push ${{env.DOCKER_REGISTRY}}/${{env.IMAGE_NAME}}:latest
-
   deploy-kubectl:
     needs: build-push-artifact
     runs-on: "self-hosted" 
