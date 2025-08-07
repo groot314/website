@@ -14,6 +14,6 @@ jobs:
     runs-on: "self-hosted" 
     steps:
       - name: Rollout restart
-        uses: actions-hub/kubectl@master
+        uses: actions-hub/kubectl@v1.31.1
         with:
           args: rollout restart deployment website -n website
