@@ -28,10 +28,9 @@ jobs:
   deploy-kubectl:
     needs: build-push-artifact
     runs-on: self-hosted
-    env:
-      KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
     steps:
       - name: Rollout restart
         uses: actions-hub/kubectl@master
         with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
           args: rollout restart deployment webpage -n website
