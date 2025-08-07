@@ -7,13 +7,31 @@ on:
       - '**'
 
 env:
+  REGISTRY: docker-registry.local.root-g.com
+  IMAGE_NAME: website/site
   KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
 jobs:
+  build-push-artifact:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Tag and build Docker image
+        run: |
+          docker build -t ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest .
+
+      - name: Push to self-hosted Docker registry
+        run: docker push ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
+
   deploy-kubectl:
-    runs-on: "self-hosted" 
+    needs: build-push-artifact
+    runs-on: self-hosted
+    env:
+      KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
     steps:
       - name: Rollout restart
-        uses: actions-hub/kubectl@v1.31.1
+        uses: actions-hub/kubectl@master
         with:
-          args: rollout restart deployment website -n website
+          args: rollout restart deployment webpage -n website
