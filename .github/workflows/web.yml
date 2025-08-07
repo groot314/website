@@ -24,7 +24,6 @@ jobs:
       - name: Push to self-hosted Docker registry
         run: docker push ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
 
-jobs:
   deploy:
     name: Deploy
     runs-on: "self-hosted" 
