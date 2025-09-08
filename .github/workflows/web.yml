@@ -25,6 +25,7 @@ jobs:
       - name: Push to self-hosted Docker registry
         run: docker push ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:latest
 
+
   deploy-kubectl:
     needs: build-push-artifact
     runs-on: self-hosted
