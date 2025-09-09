@@ -6,8 +6,8 @@ COPY . .
 
 RUN go mod download
  
-RUN go build -o app
+RUN go build ./cmd/web
  
 EXPOSE 8080
  
-CMD [ "/app/app" ]
+CMD [ "/app/web" ]
