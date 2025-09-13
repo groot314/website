@@ -13,7 +13,7 @@ import (
 
 func main() {
 	port := flag.String("port", "8080", "Port for SSH Server")
-	host := flag.String("host", "localhost", "Host for SSH Server")
+	host := flag.String("host", "", "Host for SSH Server")
 	flag.Parse()
 
 	r := chi.NewRouter()
@@ -21,7 +21,11 @@ func main() {
 	r.Mount("/", router.PageRoutes())
 	r.Mount("/ds", router.DataStarRoutes())
 
-	log.Printf("Starting server on http://%s:%s", *host, *port)
+	if *host == "" {
+		log.Printf("Starting server on http://%s:%s", "localhost", *port)
+	} else {
+		log.Printf("Starting server on http://%s:%s", *host, *port)
+	}
 
 	if err := http.ListenAndServe(fmt.Sprintf("%s:%s", *host, *port), r); err != nil {
 		panic(err)
