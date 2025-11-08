@@ -7,7 +7,7 @@ on:
       - '**'
 
 env:
-  REGISTRY: docker-registry.local.root-g.com
+  REGISTRY: cr.local.bunk3r.dev
   IMAGE_NAME: website/site
   KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
 
@@ -35,4 +35,4 @@ jobs:
       - name: Rollout restart
         uses: actions-hub/kubectl@master
         with:
-          args: rollout restart deployment webpage -n website
+          args: rollout restart deployment webpage -n geoff
